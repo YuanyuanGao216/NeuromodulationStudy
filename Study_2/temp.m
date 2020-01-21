@@ -1,10 +1,7 @@
 clear all
 clc
 close all
-y = [52.7 57.5 45.9 44.5 53.0 57.0 45.9 44.0]';
-g1 = [1 2 1 2 1 2 1 2];
-g2 = {'hi';'hi';'lo';'lo';'hi';'hi';'lo';'lo'};
-g3 = {'may';'may';'may';'may';'june';'june';'june';'june'};
-
-[~,~,stats] = anovan(y,{g1 g2 g3},'model','interaction',...
-    'varnames',{'g1','g2','g3'});
+x = (0:0.2:5)';
+y = 2*exp(-0.2*x) + 0.5*randn(size(x));
+f = fit(x,y,'exp1');
+plot(f,x,y)

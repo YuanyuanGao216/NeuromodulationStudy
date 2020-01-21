@@ -1,5 +1,6 @@
-function SigTest(DataMatrix,delete_unskilled)
+function LearningCurveFeature(DataMatrix,delete_unskilled)
 
+% OLS model:
 f = fieldnames(DataMatrix)';
 f{2,1} = {};
 Data_by_Sub = struct(f{:});
@@ -15,29 +16,25 @@ if delete_unskilled == 1
 else
     Data_by_Sub = DataMatrix;
 end
-N = 0;
-for i = 1:length(Data_by_Sub)
-    N = N + size(Data_by_Sub(i).TrainData,1);
-end
-time = zeros(N,1);
-error = zeros(N,1);
-score = zeros(N,1);
-days = zeros(N,1);
-stim = cell(N,1);
-subj = cell(N,1);
-j = 1;
-FollowUpMatrix = zeros(length(Data_by_Sub)*3,3);
-FollowUpCode = cell(length(Data_by_Sub)*3,1);
-TransferMatrix = zeros(length(Data_by_Sub),2);
-TransferCode = cell(length(Data_by_Sub),1);
-for i = 1:length(Data_by_Sub)
-    TrainData = Data_by_Sub(i).TrainData;
-    
-    n = size(TrainData,1);
-    time(j:j+n-1) = TrainData(:,4);
-    error(j:j+n-1) = TrainData(:,5);
-    score(j:j+n-1) = TrainData(:,6);
-    days(j:j+n-1) = TrainData(:,1);
+N = length(Data_by_Sub);
+LR = zeros(N,3);
+StimCode = cell(N,1);
+for i = 1:N
+    Data = Data_by_Sub(i).TrainData;
+    Time = Data(:,4);
+    Error = Data(:,5);
+    Score = Data(:,6);
+%     Score = 300 - Score;
+    LR_Time = OLSmodel(Time,'time');
+    ts = sprintf('S%d time',i);
+    title(ts);
+    LR_Error = OLSmodel(Error,'error');
+    ts = sprintf('S%d error',i);
+    title(ts);
+    LR_Score = OLSmodel(Score,'score');
+    ts = sprintf('S%d score',i);
+    title(ts);
+    LR(i,:) = [LR_Time,LR_Error,LR_Score];
     if string(Data_by_Sub(i).code) == 'C'
         stim_code = 'Sham';
     elseif string(Data_by_Sub(i).code) == 'A'
@@ -45,56 +42,11 @@ for i = 1:length(Data_by_Sub)
     else
         stim_code = 'tRNS';
     end
-    stim(j:j+n-1) = repmat({stim_code},n,1);
-    subj(j:j+n-1) = repmat(Data_by_Sub(i).name,n,1);
-    j = j+n;
-    
-    FollowUpData = Data_by_Sub(i).FollowUpData;
-    FollowUpMatrix((i-1)*3+1:i*3,:) = FollowUpData;
-    FollowUpCode((i-1)*3+1:i*3,1) = repmat({stim_code},3,1);
-    
-    TransferData = Data_by_Sub(i).TransferData;
-    TransferMatrix(i,:) = TransferData';
-    TransferCode(i,1) = {stim_code};
+    StimCode(i) = {stim_code};
 end
-
-prompt = 'Which var? 1 for time, 2 for error, 3 for score ';
-var_code = input(prompt);
-if var_code ==1
-    var_type = 'time';
-elseif var_code == 2
-    var_type = 'error';
-elseif var_code == 3
-    var_type = 'score';
-end
-exp_str = ['dep_var = ' var_type ';'];
-eval(exp_str);
-ifContinue = 1;
-while ifContinue == 1
-    prompt = 'Which day? ';
-    d = input(prompt);
-    if d<13
-        fprintf('Day #%d:\t',d)
-        index = find(days == d);
-        X = dep_var(index);
-        Group = stim(index);
-        title_string = sprintf('Day #%d %s',d,var_type);
-    elseif d == 13
-        fprintf('FollowUp:\t')
-        X = FollowUpMatrix(:,var_code);
-        Group = FollowUpCode;
-        title_string = sprintf('Follow Up %s',var_type);
-    elseif d == 14
-        fprintf('Transfer:\t')
-        X = FollowUpMatrix(:,1);
-        Group = FollowUpCode;
-        title_string = sprintf('Transfer time');
-    elseif d == 15
-        fprintf('Transfer:\t')
-        X = FollowUpMatrix(:,2);
-        Group = FollowUpCode;
-        title_string = sprintf('Transfer time');
-    end
+for j = 1:3
+    X = LR(:,j);
+    Group = StimCode;
     [p,~,stats] = anova1(X,Group,'on');
     fprintf('Anova p = %.3f:\n',p)
     [c,m,h,nms] = multcompare(stats);
@@ -106,7 +58,6 @@ while ifContinue == 1
     yt = get(gca, 'YTick');
     y_limits = ylim;
     xt = get(gca, 'XTick');
-    
     
     alpha = 0.05;
     post_hoc_p = c(:,6);
@@ -136,13 +87,16 @@ while ifContinue == 1
         end
     end
 
-    
+
     hold off
-    title(title_string)
+    if j == 1
+        title('time')
+    elseif j == 2
+        title('error')
+    elseif j == 3
+        title('score')
+    end
     set(gcf, 'Position',  [100, 100, 250, 200])
     set(gca,'FontSize',12)
-    
-    ifContinue = input('Continue? ');
-    close all
-    close all hidden
 end
+

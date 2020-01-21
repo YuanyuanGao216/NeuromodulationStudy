@@ -141,6 +141,7 @@ for i = 1:length(Data_by_Sub)
     Scores_0 = Scores_0 + Scores;
 end
 FLS_THRESH = mean(Scores_0./length(Data_by_Sub));
+% FLS_THRESH = 151.2;
 % FLS_THRESH = 76; %Junior: 41, Intermediate: 65, Senior: 76
 for i = 1:length(Data_by_Sub)
     Data = Data_by_Sub(i);
