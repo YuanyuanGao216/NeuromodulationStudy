@@ -1,0 +1,8 @@
+*.m~
+*.mat
+*.txt
+*.fig
+*.png
+*.hdf5
+*.asv
+*.svg
