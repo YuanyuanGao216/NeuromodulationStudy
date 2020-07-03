@@ -1,8 +1,5 @@
 close all
 fs = 1/0.128;
-% tRNS_color = [63,87,167]./256;
-% tDCS_color = [221,41,41]./256;
-% Sham_color = [85,85,85]./256;
 load('../../../Processed_Data/TSHbMatrix.mat','Hb')
 tRNS_color = [56,181,254]./256;
 tDCS_color = [253,145,80]./256;
@@ -13,11 +10,11 @@ brain_areas = {'lPFC';'mPFC';'rPFC';'llM1';'lmM1';'rmM1';'rlM1';'SMA'};
 figure
 hold on
 for brain_area = 1:length(brain_areas)
-%     data = Hb{bio}.train1{brain_area};
+    data = Hb{bio}.train1{brain_area};
 %     data = Hb{bio}.train2{brain_area};
 %     data = Hb{bio}.follow{brain_area};
 %     data = Hb{bio}.transfer1{brain_area};
-    data = Hb{bio}.transfer2{brain_area};
+%     data = Hb{bio}.transfer2{brain_area};
 %     data = Hb{bio}.Day1{brain_area};
 %     figure
 %     hold on
@@ -47,10 +44,10 @@ for brain_area = 1:length(brain_areas)
     plot(x,tRNS_y,'color',tRNS_color,'linewidth',1)
     hold on
     
-%     % train1
-%     if ismember(brain_area, [3 4 5])
-%         plot(round(fs*28),3*1e-7,'*','color',tRNS_color,'HandleVisibility','off','markersize',6)
-%     end
+    % train1
+    if ismember(brain_area, [3 4 5])
+        plot(round(fs*28),3*1e-7,'*','color',tRNS_color,'HandleVisibility','off','markersize',6)
+    end
 % %     train 2
 %     if ismember(brain_area, [1 3 7])
 %         plot(round(fs*28),3*1e-7,'*','color',tRNS_color,'HandleVisibility','off','markersize',6)
@@ -79,9 +76,6 @@ for brain_area = 1:length(brain_areas)
 
     set(gcf,'position',[125         459        1114         380])
     set(gca,'fontsize',15)
-%     ax = gca;
-%     ax.XGrid = 'off';
-%     ax.YGrid = 'on';
     patch(([10 25 25 10]+10)*fs,[ylim_value(1),ylim_value(1),ylim_value(2),ylim_value(2)]*1.5,...
         [0.4660 0.6740 0.1880],'linestyle','none','FaceAlpha',.1);
     
