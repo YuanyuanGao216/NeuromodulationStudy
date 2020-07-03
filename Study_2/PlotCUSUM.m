@@ -18,15 +18,16 @@ a = log((1-beta)/alpha);
 b = log((1-alpha)/beta);
 h0 = -b/(P+Q);
 h1 = a/(P+Q);
-n = 120;
+N = 120;
 j1 = 1;
 j2 = 1;
 j3 = 1;
+cmap = colormap(hsv(21));
 for i = 1:length(Data_by_Sub)
     S_name = string(Data_by_Sub(i).name);
     CUSUM_scores = Data_by_Sub(i).CUSUM;
     n = length(CUSUM_scores);
-    figure(f_CUSUM);plot(1:n, CUSUM_scores,'*-','DisplayName',string(S_name));
+    figure(f_CUSUM);plot(1:n, CUSUM_scores,'*-','DisplayName',string(S_name),'Color',cmap(i,:));
     figure(f_CUSUM_each);
     
     stim_code = Data_by_Sub(i).code;
@@ -48,8 +49,8 @@ for i = 1:length(Data_by_Sub)
     end
     subplot(7,3,plot_num);hold on;
     plot(1:n, CUSUM_scores,'*-','DisplayName',S_name,'color',color_code);
-    h_h0 = plot(0:n,ones(1,n+1)*h0);
-    h_h1 = plot(0:n,ones(1,n+1)*h1);
+    h_h0 = plot(0:N,ones(1,N+1)*h0);
+    h_h1 = plot(0:N,ones(1,N+1)*h1);
     set(h_h0                               ,...
         'LineStyle'         ,'--'         ,...
         'LineWidth'         ,2.0        ,...
@@ -66,8 +67,8 @@ figure(f_CUSUM);set(gcf, 'Position',  [100, 100, 500, 300])
 figure(f_CUSUM_each);set(gcf, 'Position',  [100, 100, 1000, 1000])
 figure(f_CUSUM)
 
-h_h0 = plot(0:n,ones(1,n+1)*h0);
-h_h1 = plot(0:n,ones(1,n+1)*h1);
+h_h0 = plot(0:N,ones(1,N+1)*h0);
+h_h1 = plot(0:N,ones(1,N+1)*h1);
 set(h_h0                               ,...
     'LineStyle'         ,'--'         ,...
     'LineWidth'         ,2.0        ,...
@@ -81,8 +82,7 @@ set(h_h1                               ,...
 
 hXLabel = xlabel('Trial');
 hYLabel = ylabel('CUSUM score');
-set([hXLabel, hYLabel]                  ,...
-    'FontName'      ,'Times New Roman'  ,...
-    'FontSize'      ,15                 );
+set(gca,'FontSize',9)
+set(gca, 'FontName', 'Helvetica')
 
 legend('Location','BestOutside');
