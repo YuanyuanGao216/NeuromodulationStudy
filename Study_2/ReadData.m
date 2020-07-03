@@ -1,11 +1,22 @@
 function DataMatrix = ReadData()
+% output DataMatrix is a structure:
+% name: subject name
+% TrainData: trials X [day, trial, total trial, time, error, score]
+% TransferData: trials X time
+% FollowUpData: trials X [time, error, score]
+
 if ismac
-    DataPath = '/Users/gaoyuanyuan/Dropbox/Cemsim/Studies/Buffalo study/raw data';
+    DataPath = '../../../raw_data';
 else
-    DataPath = 'C:\Users\Yvonne\Dropbox\Cemsim\Studies\Buffalo study\raw data';
+    DataPath = '..\..\..\Raw_data';
 end
 DataFile = 'data collection form 2.xlsx';
-filename = [DataPath, '/', DataFile];
+if ismac
+    filename = [DataPath, '/', DataFile];
+else
+    filename = [DataPath, '\', DataFile];
+end
+
 sheet = 'Study 2';
 xlRange = 'A3:J2185';
 [num,txt,raw] = xlsread(filename,sheet,xlRange);
@@ -140,9 +151,10 @@ for i = 1:length(Data_by_Sub)
     Scores = Data.TrainData(1:5,6);
     Scores_0 = Scores_0 + Scores;
 end
-FLS_THRESH = mean(Scores_0./length(Data_by_Sub));
+% FLS_THRESH = mean(Scores_0./length(Data_by_Sub));
 % FLS_THRESH = 151.2;
 % FLS_THRESH = 76; %Junior: 41, Intermediate: 65, Senior: 76
+FLS_THRESH = 109.2;
 for i = 1:length(Data_by_Sub)
     Data = Data_by_Sub(i);
     Scores = Data.TrainData(:,6);
