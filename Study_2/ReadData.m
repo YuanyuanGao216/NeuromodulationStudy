@@ -4,6 +4,9 @@ function DataMatrix = ReadData()
 % TrainData: trials X [day, trial, total trial, time, error, score]
 % TransferData: trials X time
 % FollowUpData: trials X [time, error, score]
+% code: the stim code: 'A' - tDCS; 'B' - tRNS; 'C' - 'Sham'
+% CUSUM: CUSUM scores
+% skilled: 0 - unskilled; 1 - skilled
 
 if ismac
     DataPath = '../../../raw_data';
