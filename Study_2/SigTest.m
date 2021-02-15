@@ -138,8 +138,38 @@ elseif d == 15
     set(gca,'FontSize',12)
     title(title_string)
 end
-[p,~,stats] = anova1(X,Group,'on');
-fprintf('Anova p = %.3f:\n',p)
+flag = 0;
+% before anova1, let us check normality and homogeneity of variance
+fprintf('\nNormality check: \n');
+x_tDCS = X(strcmp(Group, 'tDCS'));
+x_tRNS = X(strcmp(Group, 'tRNS'));
+x_Sham = X(strcmp(Group, 'Sham'));
+[h,p] = kstest(x_tDCS);
+fprintf('tDCS: p = %.3f\n',p)
+[h,p] = kstest(x_tRNS);
+fprintf('tRNS: p = %.3f\n',p)
+[h,p] = kstest(x_Sham);
+fprintf('Sham: p = %.3f\n',p)
+
+% homogeneity of variance
+fprintf('\nhomogeneity of variance: \n');
+digit_label = zeros(size(Group));
+
+digit_label(strcmp(Group, 'tDCS')) = 1;
+digit_label(strcmp(Group, 'tRNS')) = 2;
+digit_label(strcmp(Group, 'Sham')) = 3;
+
+X_Data = [X,digit_label];
+Levenetest(X_Data);
+
+flag = input('Anova?');
+% anova test
+if flag == 1
+    [p,~,stats] = anova1(X,Group,'on');
+    fprintf('Anova p = %.3f:\n',p)
+else
+    %%%%%%%need to start here
+end
 [c,m,h,nms] = multcompare(stats);
 display([nms(c(:,1)), nms(c(:,2)), num2cell(c(:,3:6))])
 figure

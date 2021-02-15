@@ -19,15 +19,6 @@ for period_start_idx = 1:length(period_start_array)-1
         train2_acc(period_start_idx,period_end_idx) = acc.train2;
     end
 end
-% figure
-% hold on
-% plot(train1_acc,'b-o')
-% plot(train2_acc,'b-o')
-% set(gca,'FontSize',15)
-% set(gca, 'FontName', 'Arial')
-% title('LDA classification')
-% ylable('Accuracy')
-% xlable('period')
 figure
 imagesc(train1_acc);
 colorbar;
@@ -68,6 +59,6 @@ max_num = max(train1_acc(:));
 fprintf('train1: max acc is %f; start = %d; end = %d\n',max_num,period_start_array(X),period_start_array(Y))
 
 max_num = max(train2_acc(:));
-[X Y]=find(train2_acc == max_num);
+[X Y]=find(train2_acc == max_num,1);
 fprintf('train2: max acc is %f; start = %d; end = %d\n',max_num,period_start_array(X),period_start_array(Y))
 

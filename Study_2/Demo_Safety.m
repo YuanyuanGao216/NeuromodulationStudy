@@ -1,3 +1,4 @@
+define_colors
 delete_unskilled = 1;
 unskilled = {'L2','L4','L5','L21'};
 tDCS_subject = {'L4','L5','L7','L14','L15','L19','L22'};
@@ -70,10 +71,13 @@ Sham_change = Sham_after - Sham_before;
 figure
 hold on
 x = 14:-1:1;
-y = [mean(tDCS_change,1);mean(tRNS_change,1);mean(Sham_change,1)];
-b = barh(x,y',1);
+% y = [mean(tDCS_change,1);mean(tRNS_change,1);mean(Sham_change,1)];
+y = [mean(tDCS_change,1);mean(Sham_change,1)];
 
-legend('tDCS','tRNS','Sham','location','southeast')
+barh(x-0.2,mean(tDCS_change,1),0.4,'facecolor',Sham_color);
+barh(x+0.2,mean(Sham_change,1),0.4,'facecolor',tDCS_color);
+
+legend('tDCS','Sham','location','southeast')
 yticks(1:14)
 yticklabels(fliplr({'1. Headache','2. Neck Pain','3. Back Pain',...
     '4. Blurred Vision','5.  Scalp Irritation','6. Tingling',...
@@ -163,3 +167,40 @@ end
 fprintf('Age: %.2f(%.2f)\t %.2f(%.2f)\t %.2f(%.2f)\n',mean(age_tDCS),std(age_tDCS),mean(age_tRNS),std(age_tRNS),mean(age_Sham),std(age_Sham))
 fprintf('Sex: %d:%d\t%d:%d\t%d:%d\n',F_tDCS,n_tDCS-F_tDCS,F_tRNS,n_tRNS-F_tRNS,F_Sham,n_Sham-F_Sham);
 fprintf('Haned: %d:%d\t%d:%d\t%d:%d\n',R_tDCS,n_tDCS-R_tDCS,R_tRNS,n_tRNS-R_tRNS,R_Sham,n_Sham-R_Sham);
+% x = [age_tDCS;age_tRNS;age_Sham];
+x = [age_tDCS;age_Sham];
+g = [ones(size(age_tDCS));2*ones(size(age_tRNS));3*ones(size(age_Sham))];
+figure
+% boxplot(x,g)
+% hold on
+% scatter(ones(size(age_tDCS)).*(1+(rand(size(age_tDCS))-0.5)/10),age_tDCS,'r','filled')
+% scatter(2*ones(size(age_tRNS)).*(1+(rand(size(age_tRNS))-0.5)/10),age_tRNS,'b','filled')
+% scatter(3*ones(size(age_Sham)).*(1+(rand(size(age_Sham))-0.5)/10),age_Sham,'g','filled')
+% Y = {age_tDCS,age_tRNS,age_Sham};
+Y = {age_tDCS,age_Sham};
+
+[h,L,MX,MED] = violin(Y,'facealpha',0.1)
+hold on
+x_position = [ones(size(age_tDCS)).*(1+(rand(size(age_tDCS))-0.5)/10);...
+    2*ones(size(age_Sham)).*(1+(rand(size(age_Sham))-0.5)/10)];
+% scatter(ones(size(age_tDCS)).*(1+(rand(size(age_tDCS))-0.5)/10),age_tDCS,150,'b','x','linewidth',2)
+% scatter(2*ones(size(age_tRNS)).*(1+(rand(size(age_tRNS))-0.5)/10),age_tRNS,150,'b','x','linewidth',2)
+% scatter(3*ones(size(age_Sham)).*(1+(rand(size(age_Sham))-0.5)/10),age_Sham,150,'b','x','linewidth',2)
+scatter(x_position,x,50,'b','x','linewidth',2,'displayname','data')
+xticks([1 2])
+xticklabels({'tDCS','Sham'})
+set(gca,'FontSize',12)
+set(gca, 'FontName', 'Arial')
+ylabel('Age')
+set(gcf, 'Position',  [360   423   395   275])
+
+[h_Sham,~] = kstest(age_Sham);
+[h_tDCS,~] = kstest(age_tDCS);
+if h_Sham == 0 && h_tDCS == 0 % if they are all normally distrubuted
+    [h,p] = ttest(age_Sham,age_tDCS);
+else
+    [p,h] = ranksum(age_Sham,age_tDCS);
+end
+display(h_Sham)
+display(h_tDCS)
+display(p)

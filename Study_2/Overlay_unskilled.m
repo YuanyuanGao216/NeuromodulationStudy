@@ -9,10 +9,10 @@ savepath = '../../../Processed_Data/HbOverlay';
 
 
 if delete_unskilled == 2
-    temp.Train(2,1,:,:,:,:) = MeanHbMatrix.Train(2,1,:,:,:,:);
+%     temp.Train(2,1,:,:,:,:) = MeanHbMatrix.Train(2,1,:,:,:,:);
     temp.Train(1,1,:,:,:,:) = MeanHbMatrix.Train(1,1,:,:,:,:);
     temp.Train(1,2,:,:,:,:) = MeanHbMatrix.Train(1,2,:,:,:,:);
-    temp.Train(2,2,:,:,:,:) = MeanHbMatrix.Train(2,6,:,:,:,:);
+%     temp.Train(2,2,:,:,:,:) = MeanHbMatrix.Train(2,6,:,:,:,:);
     
     MeanHbMatrix = temp;
 end
@@ -27,16 +27,12 @@ cd(oldpath)
 t = 0.128:0.128:0.128*10;
 group.procResult.tHRF = t;
 % ANOVA file
-brain_areas = {'lPFC';'mPFC';'rPFC';'llM1';'lmM1';'rmM1';'rlM1';'SMA'};
-brain_channels = [2,2,2,5,4,4,5,4];
-biomarkers = {'HbO','HbR'};
-stim_codes = {'tDCS','tRNS','Sham'};
+stim_codes = {'tDCS','Sham'};
 
 
 % day 2-6
 % overlay
-for stim = 1:2
-    % MeanHbMatrix.Train = nan(3,7,12,11,2,28)
+for stim = 1:1
     data = MeanHbMatrix.Train(stim,:,2:6,:,:,:);
     HbData = nanmean(nanmean(nanmean(data,2),4),3);
     HbData = squeeze(HbData);
@@ -49,8 +45,7 @@ end
 
 % day 7-12
 % overlay
-for stim = 1:2
-    % MeanHbMatrix.Train = nan(3,7,12,11,2,28)
+for stim = 1:1
     data = MeanHbMatrix.Train(stim,:,7:12,:,:,:);
     HbData = nanmean(nanmean(nanmean(data,2),4),3);
     HbData = squeeze(HbData);

@@ -1,9 +1,9 @@
-function Plot_2nd_day(DataMatrix,delete_unskilled,delete_high_starters)
+function Plot_2nd_day(DataMatrix,delete_unskilled)
 define_colors
 Data_by_Sub = delete_sub(DataMatrix,delete_unskilled);
 
 tDCSday1 = nan(7,1);
-tRNSday1 = nan(7,1);
+% tRNSday1 = nan(7,1);
 Shamday1 = nan(7,1);
 for day = 1:2
     tDCSday = nan(7,10);
@@ -22,9 +22,6 @@ for day = 1:2
         if code == 'A'
             tDCSday(j_tDCS,1:size(dayscore,1)) = dayscore';
             j_tDCS = j_tDCS + 1;
-        elseif code == 'B'
-            tRNSday(j_tRNS,1:size(dayscore,1)) = dayscore';
-            j_tRNS = j_tRNS + 1;
         elseif code == 'C'
             Shamday(j_Sham,1:size(dayscore,1)) = dayscore';
             j_Sham = j_Sham + 1;
@@ -37,13 +34,11 @@ for day = 1:2
     
     %  std( data ) / sqrt( length( data ))
     tDCSday(:,sum(~isnan(tDCSday))==0) = [];
-    tRNSday(:,sum(~isnan(tRNSday))==0) = [];
     Shamday(:,sum(~isnan(Shamday))==0) = [];
 
     
     if day == 1
         tDCSday1 = tDCSday;
-        tRNSday1 = tRNSday;
         Shamday1 = Shamday;
     end
     if day == 2
@@ -51,17 +46,13 @@ for day = 1:2
         hold on
         y1 = [nanmean(tDCSday1),nanmean(tDCSday)];
         y_e1 = [nanstd(tDCSday1)./sum(~isnan(tDCSday1)),nanstd(tDCSday)./sum(~isnan(tDCSday))];
-        y2 = [nanmean(tRNSday1),nanmean(tRNSday)];
-        y_e2 = [nanstd(tRNSday1)./sum(~isnan(tRNSday1)),nanstd(tRNSday)./sum(~isnan(tRNSday))];
         y3 = [nanmean(Shamday1),nanmean(Shamday)];
         y_e3 = [nanstd(Shamday1)./sum(~isnan(Shamday1)),nanstd(Shamday)./sum(~isnan(Shamday))];
         line_width = 1.0;
         errorbar(0,y1(1),y_e1(1),'color',tDCS_color, 'linewidth',line_width)
-        errorbar(0,y2(1),y_e2(1),'color',tRNS_color, 'linewidth',line_width)
         errorbar(0,y3(1),y_e3(1),'color',Sham_color, 'linewidth',line_width)
 
         errorbar(1:size(tDCSday,2),y1(2:end),y_e1(2:end),'color',tDCS_color, 'linewidth',line_width)
-        errorbar(1:size(tRNSday,2),y2(2:end),y_e2(2:end),'color',tRNS_color, 'linewidth',line_width)
         errorbar(1:size(Shamday,2),y3(2:end),y_e3(2:end),'color',Sham_color, 'linewidth',line_width)
         
         plot([0.5 0.5],[0 250],'k:')
@@ -69,7 +60,7 @@ for day = 1:2
         title(title_string)
         xlabel('Trial number')
         ylabel('FLS score')
-        legend('tDCS','tRNS','Sham','location','northeastoutside')
+        legend('tDCS','Sham','location','northeastoutside')
         set(gca,'FontSize',14)
         box on
         set(gcf, 'Position',  [100, 100, 300, 230])

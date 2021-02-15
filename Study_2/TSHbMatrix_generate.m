@@ -1,22 +1,20 @@
 function TSHbMatrix = TSHbMatrix_generate(Data_by_Sub)
 
-TSHbMatrix.Train = nan(3,7,12,11,2,8,6803);
+TSHbMatrix.Train = nan(2,7,12,11,2,8,6803);
 % 3 stims (tDCS,tRNS,Sham);7subjects;12days;11trials at most; 2
 % biomarkers(HbO&HbR); 28 channels;
-TSHbMatrix.Follow = nan(3,7,1,3,2,8,6803);
-TSHbMatrix.Transfer = nan(3,7,2,1,2,8,6803);
+TSHbMatrix.Follow = nan(2,7,1,3,2,8,6803);
+TSHbMatrix.Transfer = nan(2,7,2,1,2,8,6803);
 
-s_index = ones(3,1);
+s_index = ones(2,1);
 channels = [1:2,4:5,7:8,10:14,16:19,21:24,26:30,32:35];
 brain_channels = [2,2,2,5,4,4,5,4];
 for sub = 1:length(Data_by_Sub)
     code = Data_by_Sub(sub).code;
     if strcmp(code,'A')
         code = 1;
-    elseif strcmp(code,'B')
-        code = 2;
     elseif strcmp(code,'C')
-        code = 3;
+        code = 2;
     end
     Data = Data_by_Sub(sub).fNIRS;
     n_day = length(Data);

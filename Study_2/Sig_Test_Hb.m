@@ -10,7 +10,7 @@ end
 
 %% whole follow
 sig_Hb(MeanHbMatrix,'follow',savepath)
-sig_Hb(MeanHbMatrix,'transfer',savepath)
+% sig_Hb(MeanHbMatrix,'transfer',savepath)
 sig_Hb(MeanHbMatrix,'day2-6',savepath)
 sig_Hb(MeanHbMatrix,'day7-12',savepath)
 sig_Hb(MeanHbMatrix,'day1',savepath)

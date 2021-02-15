@@ -1,6 +1,14 @@
 function overlay_Hb(MeanHbMatrix,stage,savepath)
-stim_codes = {'tDCS','tRNS','Sham'};
-
+stim_codes = {'tDCS','Sham'};
+% get group structure
+filepath = '../../../Raw_Data/Study_#2/L2';
+oldpath = cd(filepath);
+load('groupResults.mat')
+cd(oldpath)
+t = 0.128:0.128:0.128*10;
+group.procResult.tHRF = t;
+brain_areas = {'lPFC';'mPFC';'rPFC';'llM1';'lmM1';'rmM1';'rlM1';'SMA'};
+brain_channels = [2,2,2,5,4,4,5,4];
 if strcmp(stage,'transfer')
     trial_no = 2;
 else
@@ -8,7 +16,7 @@ else
 end
 for t = 1:trial_no
     % overlay
-    for stim = 1:3
+    for stim = 1:length(stim_codes)
         % MeanHbMatrix.Transfer = nan(3,7,2,1,2,28)
         if strcmp(stage,'transfer')
             data = MeanHbMatrix.Transfer(stim,:,t,:,:,:);
@@ -25,6 +33,12 @@ for t = 1:trial_no
         end
         
         HbData = squeeze(HbData);
+        for brain_area = 1:length(brain_areas)
+            channels = (sum(brain_channels(1:(brain_area-1)))+1):sum(brain_channels(1:(brain_area)));
+            foo = nanmean(HbData(:,channels),2);
+            foo = repmat(foo, 1, length(channels));
+            HbData(:,channels) = foo;
+        end
         dc(:,1,:) = repmat(HbData(1,:),10,1);
         dc(:,2,:) = repmat(HbData(2,:),10,1);
         group.procResult.dcAvg = dc*1e6;
@@ -38,6 +52,7 @@ for t = 1:trial_no
             path = [savepath,'/day7-12/',char(stim_codes{stim}),'/groupResults.mat'];
 
         end
+         
         save(path,'group')
     end
 end
